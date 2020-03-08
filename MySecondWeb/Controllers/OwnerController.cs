@@ -87,7 +87,7 @@ namespace MySecondWeb.Controllers
             {
                 var owner = await _ownerService.GetOwnerById(id);
 
-                if (owner.OwnerId.Equals(Guid.Empty))
+                if (owner.Id.Equals(Guid.Empty))
                 {
                     _logger.LogError($"Owner with id: {id}, hasn't been found in db.");
                     return NotFound();
