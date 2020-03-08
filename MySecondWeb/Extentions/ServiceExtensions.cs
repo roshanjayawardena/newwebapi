@@ -1,6 +1,6 @@
-﻿using AutoMapper;
+﻿using ApplicationCore.Interfaces;
+using AutoMapper;
 using Infastructure;
-using Infastructure.Interfaces;
 using Infastructure.Logging;
 using Infastructure.Services;
 using Infastructure.UnitOfWork;
@@ -8,10 +8,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MySecondWeb.Extentions
 {
