@@ -1,6 +1,9 @@
-﻿using Infastructure;
+﻿using AutoMapper;
+using Infastructure;
+using Infastructure.Interfaces;
 using Infastructure.Logging;
-using Infastructure.Repository;
+using Infastructure.Services;
+using Infastructure.UnitOfWork;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -40,18 +43,27 @@ namespace MySecondWeb.Extentions
             services.AddSingleton<ILoggerManager, LoggerManager>();
         }
 
+        public static void ConfigureAutoMapper(this IServiceCollection services)
+        {
+            services.AddAutoMapper(typeof(Startup));
+        }
 
         public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration config)
         {
             var connectionString = config["sqlconnection:connectionString"];
             services.AddDbContext<RepositoryContext>(o => o.UseSqlServer(connectionString));
+           
         }
 
 
         public static void ConfigureRepositoryWrapper(this IServiceCollection services)
         {
-            services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IOwnerService, OwnerService>();
+
         }
+
+
 
     }
 }

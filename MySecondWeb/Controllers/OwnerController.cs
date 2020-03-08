@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ApplicationCore.Entities;
+﻿using ApplicationCore.Interfaces;
 using Infastructure.Logging;
-using Infastructure.Repository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ApplicationCore.Entities.Extention;
-using ApplicationCore.Interfaces;
+using System;
+using System.Threading.Tasks;
+
 
 namespace MySecondWeb.Controllers
 {
@@ -16,16 +11,13 @@ namespace MySecondWeb.Controllers
     [ApiController]
     public class OwnerController : BaseApiController
     {
+        private ILoggerManager _logger;     
+        private IOwnerService _ownerService;
 
-        private ILoggerManager _logger;
-        // private IOwnerRepository _ownerRepository;
-        private IRepositoryWrapper _repository;
-
-        public OwnerController(ILoggerManager logger, IRepositoryWrapper repository)
+        public OwnerController(ILoggerManager logger, IOwnerService ownerService)
         {
-
-            _logger = logger;
-            _repository = repository;
+            _logger = logger;          
+            _ownerService = ownerService;
         }
 
         [HttpGet]
@@ -33,7 +25,7 @@ namespace MySecondWeb.Controllers
         {
             try
             {
-                var owners = _repository.Owner.GetAllOwners();
+                var owners = await _ownerService.GetAllOwners();
                 _logger.LogInfo($"Returned all owners from database.");
                 return Ok(owners);
             }
@@ -45,14 +37,57 @@ namespace MySecondWeb.Controllers
             }
         }
 
+        //[HttpGet]
+        //public async Task<IActionResult> GetAllOwnersAsync()
+        //{
+        //    try
+        //    {
+        //        var owners = _repository.Owner.GetAllOwners();
+        //        _logger.LogInfo($"Returned all owners from database.");
+        //        return Ok(owners);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside GetAllOwners action: {ex.Message}");
+        //        // return StatusCode(500, "Internal server error");
+        //        return await HandleException(ex);
+        //    }
+        //}
+
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> GetOwnerByIdAsync(Guid id)
+        //{
+        //    try
+        //    {
+        //        var owner = _repository.Owner.GetOwnerById(id);
+
+        //        if (owner.Id.Equals(Guid.Empty))
+        //        {
+        //            _logger.LogError($"Owner with id: {id}, hasn't been found in db.");
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            _logger.LogInfo($"Returned owner with id: {id}");
+        //            return Ok(owner);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside GetOwnerById action: {ex.Message}");
+        //        // return StatusCode(500, "Internal server error");
+        //        return await HandleException(ex);
+        //    }
+        //}
+
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOwnerByIdAsync(Guid id)
+        public async Task<IActionResult> GetOwnerByIdAsync(int id)
         {
             try
             {
-                var owner = _repository.Owner.GetOwnerById(id);
+                var owner = await _ownerService.GetOwnerById(id);
 
-                if (owner.Id.Equals(Guid.Empty))
+                if (owner.OwnerId.Equals(Guid.Empty))
                 {
                     _logger.LogError($"Owner with id: {id}, hasn't been found in db.");
                     return NotFound();
@@ -72,61 +107,61 @@ namespace MySecondWeb.Controllers
         }
 
 
-        [HttpGet("{id}/account")]
-        public async Task<IActionResult> GetOwnerWithDetailsAsync(Guid id)
-        {
-            try
-            {
-                var owner = _repository.Owner.GetOwnerWithDetails(id);
+        //[HttpGet("{id}/account")]
+        //public async Task<IActionResult> GetOwnerWithDetailsAsync(Guid id)
+        //{
+        //    try
+        //    {
+        //        var owner = _repository.Owner.GetOwnerWithDetails(id);
 
-                if (owner.IsEmptyObject())
-                {
-                    _logger.LogError($"Owner with id: {id}, hasn't been found in db.");
-                    return NotFound();
-                }
-                else
-                {
-                    _logger.LogInfo($"Returned owner with details for id: {id}");
-                    return Ok(owner);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside GetOwnerWithDetails action: {ex.Message}");
-                // return StatusCode(500, "Internal server error");
-                return await HandleException(ex);
-            }
-        }
+        //        if (owner.IsEmptyObject())
+        //        {
+        //            _logger.LogError($"Owner with id: {id}, hasn't been found in db.");
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            _logger.LogInfo($"Returned owner with details for id: {id}");
+        //            return Ok(owner);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside GetOwnerWithDetails action: {ex.Message}");
+        //        // return StatusCode(500, "Internal server error");
+        //        return await HandleException(ex);
+        //    }
+        //}
 
 
-        [HttpPost]
-        public async Task<IActionResult> CreateOwnerAsync([FromBody]Owner owner)
-        {
-            try
-            {
-                if (owner.IsObjectNull())
-                {
-                    _logger.LogError("Owner object sent from client is null.");
-                    return BadRequest("Owner object is null");
-                }
-                if (!ModelState.IsValid)
-                {
-                    _logger.LogError("Invalid owner object sent from client.");
-                    return BadRequest("Invalid model object");
-                }
+        //[HttpPost]
+        //public async Task<IActionResult> CreateOwnerAsync([FromBody]Owner owner)
+        //{
+        //    try
+        //    {
+        //        if (owner.IsObjectNull())
+        //        {
+        //            _logger.LogError("Owner object sent from client is null.");
+        //            return BadRequest("Owner object is null");
+        //        }
+        //        if (!ModelState.IsValid)
+        //        {
+        //            _logger.LogError("Invalid owner object sent from client.");
+        //            return BadRequest("Invalid model object");
+        //        }
 
-                _repository.Owner.CreateOwner(owner);
-                _repository.Save();
+        //        _repository.Owner.CreateOwner(owner);
+        //        _repository.Save();
 
-                return CreatedAtRoute("OwnerById", new { id = owner.Id }, owner);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside CreateOwner action: {ex.Message}");
-                // return StatusCode(500, "Internal server error");
-                return await HandleException(ex);
-            }
-        }
+        //        return CreatedAtRoute("OwnerById", new { id = owner.Id }, owner);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside CreateOwner action: {ex.Message}");
+        //        // return StatusCode(500, "Internal server error");
+        //        return await HandleException(ex);
+        //    }
+        //}
 
 
 

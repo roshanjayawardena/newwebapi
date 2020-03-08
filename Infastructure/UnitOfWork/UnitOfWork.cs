@@ -1,17 +1,16 @@
 ﻿using ApplicationCore.Interfaces;
-using ApplicationCore.Services;
-using Infastructure.Services;
+using ApplicationCore.Repository;
 
-namespace Infastructure.Repository
+namespace Infastructure.UnitOfWork
 {
-    public class RepositoryWrapper : IRepositoryWrapper
+    public class UnitOfWork : IUnitOfWork
     {
 
         private RepositoryContext _repoContext;
         private IOwnerRepository _owner;
         private IAccountRepository _account;
 
-        public RepositoryWrapper(RepositoryContext repositoryContext)
+        public UnitOfWork(RepositoryContext repositoryContext)
         {
             _repoContext = repositoryContext;
         }

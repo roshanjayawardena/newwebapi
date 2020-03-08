@@ -12,7 +12,7 @@ namespace ApplicationCore.Entities
     {
         [Key]
         [Column("AccountId")]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Date created is required")]
         public DateTime DateCreated { get; set; }

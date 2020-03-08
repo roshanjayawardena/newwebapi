@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MySecondWeb.Configuration.Mapping;
 using MySecondWeb.Extentions;
 using NLog;
 using Swashbuckle.AspNetCore.Swagger;
@@ -32,6 +34,10 @@ namespace MySecondWeb
             services.ConfigureLoggerService();
             services.ConfigureRepositoryWrapper();
             services.ConfigureSqlContext(Configuration);
+
+            services.AddAutoMapper(c => c.AddProfile<AutoMapping>(), typeof(Startup));
+
+
 
             services.AddSwaggerGen(c =>
             {

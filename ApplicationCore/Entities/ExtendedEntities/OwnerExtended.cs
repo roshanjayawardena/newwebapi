@@ -7,7 +7,7 @@ namespace ApplicationCore.Entities.ExtendedEntities
 {
     public class OwnerExtended: IEntity
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Address { get; set; }
@@ -20,9 +20,9 @@ namespace ApplicationCore.Entities.ExtendedEntities
 
         public OwnerExtended(Owner owner)
         {
-            Id = owner.Id;
-            Name = owner.Name;
-            DateOfBirth = owner.DateOfBirth;
+            //Id = owner.Id;
+            Name = owner.FirstName;
+           // DateOfBirth = owner.DateOfBirth;
             Address = owner.Address;
         }
     }

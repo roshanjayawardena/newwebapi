@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace Infastructure.Repository
+namespace Infastructure.UnitOfWork
 {
     public interface IRepositoryBase<T>
     {

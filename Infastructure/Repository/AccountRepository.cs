@@ -1,11 +1,11 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces;
-using Infastructure.Repository;
+using Infastructure.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infastructure.Services
+namespace Infastructure.UnitOfWork
 {
     public class AccountRepository : RepositoryBase<Account>, IAccountRepository
     {
